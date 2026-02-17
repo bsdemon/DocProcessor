@@ -1,0 +1,14 @@
+[project]
+name = "docprocessor"
+version = "0.1.0"
+description = "Small distributed-style service that handles background document ingestion"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "celery>=5.6.2",
+    "django>=6.0.2",
+    "django-filter>=25.2",
+    "djangorestframework>=3.16.1",
+    "markdown>=3.10.2",
+    "redis>=7.2.0",
+]
