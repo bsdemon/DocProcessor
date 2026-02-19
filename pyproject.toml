@@ -8,7 +8,19 @@ dependencies = [
     "celery>=5.6.2",
     "django>=6.0.2",
     "django-filter>=25.2",
+    "django-stubs>=5.2.9",
+    "django-stubs-ext>=5.2.9",
     "djangorestframework>=3.16.1",
+    "environs>=14.5.0",
     "markdown>=3.10.2",
+    "psycopg[binary]>=3.3.3",
     "redis>=7.2.0",
 ]
+
+[tool.mypy]
+follow_imports = "silent"
+ignore_missing_imports = true
+plugins = "mypy_django_plugin.main"
+
+[tool.django-stubs]
+django_settings_module = "docprocessor.settings"

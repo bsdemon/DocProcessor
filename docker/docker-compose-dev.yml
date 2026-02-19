@@ -1,0 +1,62 @@
+services:
+  web:
+    environment:
+    - HOME=/home/app
+    - XDG_CACHE_HOME=/home/app/.cache
+    - UV_CACHE_DIR=/home/app/.cache/uv
+    user: "1000:1000"
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    entrypoint: ["/entrypoint.sh"]  
+    command: uv run python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ..:/app
+    env_file:
+      - ../.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    tmpfs:
+      - /home/app
+
+  celery:
+    user: "1000:1000"
+    environment:
+      - HOME=/home/app
+      - XDG_CACHE_HOME=/home/app/.cache
+      - UV_CACHE_DIR=/home/app/.cache/uv
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    entrypoint: []  
+    command: uv run celery -A docprocessor worker -l info
+    volumes:
+      - ..:/app
+    env_file:
+      - ../.env
+    depends_on:
+      - db
+      - redis
+    tmpfs:
+      - /home/app
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - ../.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
+
