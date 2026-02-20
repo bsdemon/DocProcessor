@@ -8,19 +8,21 @@ class CSVProcessor:
 
     def __init__(self, job: ImportJob):
         self.job = job
-        
-        #TODO remove this:
-        self.total_sum = 0
+
+        # TODO remove this
+        self.total_sum = 0.0
+       
 
     def run(self) -> float:
         self.job.status = ImportStatus.PROCESSING
         self.job.save(update_fields=["status"])
 
-        with self.job.file.open("r") as f:
+        with self.job.file.open("r", newline='', encoding="utf-8") as f:
             reader = csv.DictReader(f)
-            rows = list(reader)
+            total = sum(1 for _ in reader)
 
-        total = len(rows)
+            f.seek(0)
+            reader = csv.DictReader(f)  # recreate reader, reader is iterator
 
         ImportJob.objects.filter(id=self.job.id).update(
             total_rows=total
@@ -29,7 +31,7 @@ class CSVProcessor:
         success = 0
         failed = 0
 
-        for index, row in enumerate(rows, start=1):
+        for index, row in enumerate(reader, start=1):
             try:
                 self.process_row(row)
                 success += 1
