@@ -1,9 +1,9 @@
 services:
   web:
     environment:
-    - HOME=/home/app
-    - XDG_CACHE_HOME=/home/app/.cache
-    - UV_CACHE_DIR=/home/app/.cache/uv
+      - UV_CACHE_DIR=/tmp/uv-cache
+    tmpfs:
+      - /tmp:uid=1000,gid=1000,mode=1777
     user: "1000:1000"
     build:
       context: ..
@@ -19,15 +19,13 @@ services:
     depends_on:
       - db
       - redis
-    tmpfs:
-      - /home/app
 
   celery:
     user: "1000:1000"
     environment:
-      - HOME=/home/app
-      - XDG_CACHE_HOME=/home/app/.cache
-      - UV_CACHE_DIR=/home/app/.cache/uv
+      - UV_CACHE_DIR=/tmp/uv-cache
+    tmpfs:
+      - /tmp:uid=1000,gid=1000,mode=1777
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -40,8 +38,6 @@ services:
     depends_on:
       - db
       - redis
-    tmpfs:
-      - /home/app
 
   redis:
     image: redis:7-alpine
