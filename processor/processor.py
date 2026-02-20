@@ -12,7 +12,7 @@ class CSVProcessor:
         #TODO remove this:
         self.total_sum = 0
 
-    def run(self):
+    def run(self) -> float:
         self.job.status = ImportStatus.PROCESSING
         self.job.save(update_fields=["status"])
 
@@ -41,7 +41,7 @@ class CSVProcessor:
         self.finish(total, success, failed)
         return self.total_sum
 
-    def process_row(self, row: dict):
+    def process_row(self, row: dict[str, str]) -> None:
         if not row:
             raise ValueError("Invalid row")
 
@@ -49,14 +49,14 @@ class CSVProcessor:
         amount = float(row.get("amount", 0))
         self.total_sum += amount
 
-    def update_progress(self, processed, success, failed):
+    def update_progress(self, processed: int, success: int, failed: int) -> None:
         ImportJob.objects.filter(id=self.job.id).update(
             processed_rows=processed,
             success_rows=success,
             failed_rows=failed,
         )
 
-    def finish(self, total, success, failed):
+    def finish(self, total: int, success: int, failed: int) -> None:
         ImportJob.objects.filter(id=self.job.id).update(
             status=ImportStatus.COMPLETED,
             processed_rows=total,

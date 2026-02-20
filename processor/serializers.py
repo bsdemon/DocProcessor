@@ -13,7 +13,7 @@ class ImportStatusSerializer(serializers.ModelSerializer):
         model = ImportJob
         fields = "__all__"
 
-    def get_progress(self, obj):
+    def get_progress(self, obj: ImportJob) -> int:
         if obj.total_rows == 0:
             return 0
         return int(obj.processed_rows / obj.total_rows * 100)

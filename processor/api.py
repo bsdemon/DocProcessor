@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,7 +14,7 @@ from .models import ImportJob
 
 class ImportUploadApi(APIView):
 
-    def post(self, request):
+    def post(self, request: Request) -> Response:
         serializer = ImportUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -26,7 +27,7 @@ class ImportUploadApi(APIView):
 
 class ImportStatusApi(APIView):
 
-    def get(self, request, pk):
+    def get(self, request: Request, pk: str) -> Response:
         job = get_object_or_404(ImportJob, pk=pk)
         return Response(ImportStatusSerializer(job).data)
 

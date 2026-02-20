@@ -6,7 +6,7 @@ from .processor import CSVProcessor
 
 # TODO watchdog celery task to update log waited PENDING
 @shared_task(bind=True)
-def process_import(self, job_id: str):
+def process_import(self, job_id: str) -> None:
     try:
         job = ImportJob.objects.get(id=job_id)
         # TODO remove total
