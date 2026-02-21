@@ -1,6 +1,8 @@
 import csv
+import io
 from .models import ImportJob, ImportStatus
-
+from django.utils import timezone
+from loguru import logger
 
 class CSVProcessor:
 
@@ -12,36 +14,34 @@ class CSVProcessor:
         # TODO remove this
         self.total_sum = 0.0
        
-
     def run(self) -> float:
-        self.job.status = ImportStatus.PROCESSING
-        self.job.save(update_fields=["status"])
-
-        with self.job.file.open("r", newline='', encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            total = sum(1 for _ in reader)
-
-            f.seek(0)
-            reader = csv.DictReader(f)  # recreate reader, reader is iterator
-
         ImportJob.objects.filter(id=self.job.id).update(
-            total_rows=total
+            status=ImportStatus.PROCESSING,
+            updated_at=timezone.now(),
         )
 
-        success = 0
-        failed = 0
 
-        for index, row in enumerate(reader, start=1):
-            try:
-                self.process_row(row)
-                success += 1
-            except Exception:
-                failed += 1
+        success = failed = processed = 0
 
-            if index % self.BATCH_SIZE == 0:
-                self.update_progress(index, success, failed)
+        with self.job.file.open("rb") as bf:
+            with io.TextIOWrapper(bf, encoding="utf-8", newline="") as tf:
+                reader = csv.DictReader(tf)
+
+                for processed, row in enumerate(reader, start=1):
+                    try:
+                        self.process_row(row)
+                        success += 1
+                    except Exception:
+                        failed += 1
+
+                    if processed % self.BATCH_SIZE == 0:
+                        self.update_progress(processed, success, failed)
+
+        total = processed 
+        logger.info(f"Job {self.job.id} finished: total={total}, success={success}, failed={failed}")
         self.finish(total, success, failed)
         return self.total_sum
+
 
     def process_row(self, row: dict[str, str]) -> None:
         if not row:
@@ -56,13 +56,17 @@ class CSVProcessor:
             processed_rows=processed,
             success_rows=success,
             failed_rows=failed,
+            updated_at=timezone.now(),
         )
 
     def finish(self, total: int, success: int, failed: int) -> None:
         ImportJob.objects.filter(id=self.job.id).update(
             status=ImportStatus.COMPLETED,
+            total_rows=total,
             processed_rows=total,
             success_rows=success,
             failed_rows=failed,
+            updated_at=timezone.now(),
+            error="",
         )
 
