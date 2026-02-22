@@ -24,3 +24,10 @@ media/
 
 # node modules
 frontend/node_modules/
+
+# helper files
+*.log
+*.bak
+*.tmp
+ISSUES.md
+TODO.md
