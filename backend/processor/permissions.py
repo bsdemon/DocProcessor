@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from django.conf import settings
+from loguru import logger
 from rest_framework.permissions import BasePermission
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
@@ -18,9 +20,14 @@ class HasImportApiKey(BasePermission):
         if request.method in ("OPTIONS", "HEAD"):
             return True
         expected = getattr(settings, "API_KEY", "") or ""
-        print(f"Expected API key: {expected}")
         if not expected:
-            return False
+            logger.error("API_KEY is not configured on the server.")
+            raise PermissionDenied("Server API key is not configured")
 
         provided = request.META.get(self.header_name, "") or ""
-        return provided == expected
+        if not provided:
+            raise PermissionDenied("Missing API key")
+
+        if provided != expected:
+            raise PermissionDenied("Invalid API key")
+        return True
