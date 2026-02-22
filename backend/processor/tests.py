@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
+from django.utils.dateparse import parse_datetime
 from rest_framework.test import APITestCase
 
 from .models import ImportJob, ImportStatus
@@ -50,13 +51,26 @@ class ImportStatusApiTest(APITestCase):
             status=ImportStatus.PROCESSING,
             total_rows=100,
             processed_rows=50,
+            failed_rows=10,
+            success_rows=50,
         )
 
         response = self.client.get(f"/api/imports/{job.id}/", HTTP_X_API_KEY="test-key")
 
+        created_at = parse_datetime(response.data["created_at"])
+        updated_at = parse_datetime(response.data["updated_at"])
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], ImportStatus.PROCESSING)
         self.assertEqual(response.data["progress"], 50)
+        self.assertEqual(response.data["total_rows"], 100)
+        self.assertEqual(response.data["processed_rows"], 50)
+        self.assertEqual(response.data["success_rows"], 50)
+        self.assertEqual(response.data["failed_rows"], 10)
+        self.assertEqual(response.data["file"], "/media/imports/test.csv")
+        self.assertEqual(response.data["error"], "")
+        self.assertIsNotNone(created_at)
+        self.assertIsNotNone(updated_at)
 
     def test_status_returns_404_for_unknown_job(self):
         response = self.client.get(
