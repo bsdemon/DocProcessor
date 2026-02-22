@@ -7,7 +7,7 @@ services:
     user: "1000:1000"
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.backend
     entrypoint: ["/entrypoint.sh"]  
     command: uv run python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -28,7 +28,7 @@ services:
       - /tmp:uid=1000,gid=1000,mode=1777
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.backend
     entrypoint: []  
     command: uv run celery -A docprocessor worker -l info
     volumes:
@@ -38,6 +38,20 @@ services:
     depends_on:
       - db
       - redis
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    env_file:
+      - ../frontend/.env
+    volumes:
+      - ../frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - web
 
   redis:
     image: redis:7-alpine
@@ -54,5 +68,6 @@ services:
       - "5432:5432"
 
 volumes:
+  frontend_node_modules:
   pgdata:
 
