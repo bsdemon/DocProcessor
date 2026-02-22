@@ -17,7 +17,6 @@ class CSVProcessor:
     def __init__(self, job: ImportJob):
         self.job = job
 
-        # TODO remove this
         self.total_sum = 0.0
 
     def run(self) -> float:
@@ -85,7 +84,7 @@ class CSVProcessor:
         )
 
     def finish(self, total: int, success: int, failed: int) -> None:
-        status = ImportStatus.COMPLETED if success != 0 else ImportStatus.FAILED
+        status = ImportStatus.COMPLETED
         ImportJob.objects.filter(id=self.job.id).update(
             status=status,
             total_rows=total,
