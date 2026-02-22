@@ -10,10 +10,9 @@ from .processor import CSVProcessor
 def process_import(self, job_id: str) -> None:
     try:
         job = ImportJob.objects.get(id=job_id)
-        # TODO remove total
         processor = CSVProcessor(job)
         total = processor.run()
-        print(f"======> Total sum {total} <=======")
+        logger.info(f"ImportJob {job_id} completed successfully with amount: {total}")
     except ImportJob.DoesNotExist:
         logger.error(f"ImportJob {job_id} does not exist")
         return

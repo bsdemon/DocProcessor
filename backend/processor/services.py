@@ -11,7 +11,6 @@ class ImportService:
 
     @staticmethod
     def mark_failed(job_id: str, error: str) -> None:
-        print(f"==================> {job_id} {error} <======================")
         ImportJob.objects.filter(id=job_id).update(
             status=ImportStatus.FAILED,
             error=error,
