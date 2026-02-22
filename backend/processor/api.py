@@ -19,14 +19,14 @@ class ImportUploadApi(APIView):
         serializer = ImportUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # TODO if there is pending job for the same file or we have running job for the same file
-        # TODO proper error handlind
         job = ImportService.create_job(serializer.validated_data["file"])
         transaction.on_commit(lambda: process_import.delay(str(job.id)))
         return Response({"id": job.id}, status=status.HTTP_201_CREATED)
 
 
 class ImportStatusApi(APIView):
+    permission_classes = [HasImportApiKey]
+
     def get(self, request: Request, pk: str) -> Response:
         job = get_object_or_404(ImportJob, pk=pk)
         return Response(ImportStatusSerializer(job).data)
