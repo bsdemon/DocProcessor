@@ -21,3 +21,6 @@ media/
 
 # env file
 .env
+
+# node modules
+frontend/node_modules/

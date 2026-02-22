@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip install --no-cache-dir -U uv
 
-COPY pyproject.toml uv.lock* /app/
+COPY ../backend/pyproject.toml ../backend/uv.lock* /app/
 RUN uv sync --frozen --no-dev || uv sync --no-dev
 
-COPY . /app
+COPY backend/ /app
 
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

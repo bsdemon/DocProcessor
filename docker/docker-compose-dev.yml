@@ -11,9 +11,9 @@ services:
     entrypoint: ["/entrypoint.sh"]  
     command: uv run python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ..:/app
+      - ../backend:/app
     env_file:
-      - ../.env
+      - ../backend/.env
     ports:
       - "8000:8000"
     depends_on:
@@ -32,9 +32,9 @@ services:
     entrypoint: []  
     command: uv run celery -A docprocessor worker -l info
     volumes:
-      - ..:/app
+      - ../backend:/app
     env_file:
-      - ../.env
+      - ../backend/.env
     depends_on:
       - db
       - redis
@@ -47,7 +47,7 @@ services:
   db:
     image: postgres:16-alpine
     env_file:
-      - ../.env
+      - ../backend/.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:

@@ -1,11 +1,17 @@
 import csv
 import io
-from .models import ImportJob, ImportStatus
-from django.utils import timezone
+from typing import Any
+
 from loguru import logger
 
-class CSVProcessor:
+from .validators import CSVHeaderValidator, CSVRowValidator
 
+from .models import ImportJob, ImportStatus
+
+from django.utils import timezone
+
+
+class CSVProcessor:
     BATCH_SIZE = 50
 
     def __init__(self, job: ImportJob):
@@ -13,13 +19,27 @@ class CSVProcessor:
 
         # TODO remove this
         self.total_sum = 0.0
-       
+
     def run(self) -> float:
         ImportJob.objects.filter(id=self.job.id).update(
             status=ImportStatus.PROCESSING,
+            processed_rows=0,
+            success_rows=0,
+            failed_rows=0,
+            error="",
             updated_at=timezone.now(),
         )
 
+        with self.job.file.open("rb") as bf:
+            with io.TextIOWrapper(bf, encoding="utf-8", newline="") as tf:
+                r = csv.DictReader(tf)
+                total_rows = max(0, sum(1 for _ in r))
+                CSVHeaderValidator.validate_header(r.fieldnames)
+
+        ImportJob.objects.filter(id=self.job.id).update(
+            total_rows=total_rows,
+            updated_at=timezone.now(),
+        )
 
         success = failed = processed = 0
 
@@ -29,25 +49,30 @@ class CSVProcessor:
 
                 for processed, row in enumerate(reader, start=1):
                     try:
-                        self.process_row(row)
+                        validated = CSVRowValidator.validate_row(row)
+                        self.process_row(validated)
                         success += 1
-                    except Exception:
+                    except (ValueError, SyntaxError) as exc:
+                        logger.error(
+                            f"Row failed validation: job={self.job.id} row={row} error={str(exc)}"
+                        )
+                        failed += 1
+                    except Exception as exc:
+                        logger.exception(
+                            f"Row failed: job={self.job.id} row={processed} error={str(exc)}"
+                        )
                         failed += 1
 
                     if processed % self.BATCH_SIZE == 0:
                         self.update_progress(processed, success, failed)
 
-        total = processed 
-        logger.info(f"Job {self.job.id} finished: total={total}, success={success}, failed={failed}")
-        self.finish(total, success, failed)
+        self.finish(total_rows, success, failed)
         return self.total_sum
 
-
-    def process_row(self, row: dict[str, str]) -> None:
+    def process_row(self, row: dict[str, Any]) -> None:
         if not row:
             raise ValueError("Invalid row")
 
-        # TODO process row or ssimulate
         amount = float(row.get("amount", 0))
         self.total_sum += amount
 
@@ -60,13 +85,13 @@ class CSVProcessor:
         )
 
     def finish(self, total: int, success: int, failed: int) -> None:
+        status = ImportStatus.COMPLETED if success != 0 else ImportStatus.FAILED
         ImportJob.objects.filter(id=self.job.id).update(
-            status=ImportStatus.COMPLETED,
+            status=status,
             total_rows=total,
             processed_rows=total,
             success_rows=success,
             failed_rows=failed,
-            updated_at=timezone.now(),
             error="",
+            updated_at=timezone.now(),
         )
-

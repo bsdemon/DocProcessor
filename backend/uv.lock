@@ -201,6 +201,7 @@ dependencies = [
     { name = "django-stubs" },
     { name = "django-stubs-ext" },
     { name = "djangorestframework" },
+    { name = "emval" },
     { name = "environs" },
     { name = "loguru" },
     { name = "markdown" },
@@ -217,11 +218,34 @@ requires-dist = [
     { name = "django-stubs", specifier = ">=5.2.9" },
     { name = "django-stubs-ext", specifier = ">=5.2.9" },
     { name = "djangorestframework", specifier = ">=3.16.1" },
+    { name = "emval", specifier = ">=0.1.12" },
     { name = "environs", specifier = ">=14.5.0" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "markdown", specifier = ">=3.10.2" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.3" },
     { name = "redis", specifier = ">=7.2.0" },
+]
+
+[[package]]
+name = "emval"
+version = "0.1.12"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/be/3b/0dbfa91deee6a253f536a1492ef44418d0b3f8f54270806ae6e109abeef3/emval-0.1.12.tar.gz", hash = "sha256:b80e37ec8df34d3ec39ad15251c7064b3d39d0c9da05132a17840e7ad02f30b0", size = 68405 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/1f/b4643643693f781c12d27a19fd1856df1b4bbcc0399713987fcda23dc335/emval-0.1.12-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:be3f0446d36f567db7d9f23c189c1ccadce45f5b632aeeec98ef084803be73c7", size = 5953412 },
+    { url = "https://files.pythonhosted.org/packages/04/8b/b365505d305b352e9da4b80aefd4e4305747387906f4e0df20e0c035001b/emval-0.1.12-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:9774458900e91b714d14b21cd78df33f29b51557ae2e640c38761339f77e8336", size = 5497475 },
+    { url = "https://files.pythonhosted.org/packages/1d/2a/d22a62ebca8eb0a1631f8da922b27c30f658e5b086cdeef20ce9993bd54b/emval-0.1.12-cp38-abi3-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:06b1613f52b9c3c9fc58df400b9a3fbe47c1dd517f98d7af4bf659a4b4327df0", size = 6501165 },
+    { url = "https://files.pythonhosted.org/packages/d8/32/f9076de3846a35df0a5cc01608e605eaf8848f76958cc100372191ae2248/emval-0.1.12-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e16e5bf4bf8b5ad2c337e3b29ef2761069838070223ba9c6fb379708af2842a0", size = 5757503 },
+    { url = "https://files.pythonhosted.org/packages/75/38/a58d3030bb29c89d844375a107ece24debfe1500685f21c19b68aeb3bd88/emval-0.1.12-cp38-abi3-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:cc670e1dd8d57d02b1a50251bdd520b72a4a4fe827fb17b4dd4111b747dc7ff9", size = 6089710 },
+    { url = "https://files.pythonhosted.org/packages/39/de/4cc51b60a8bcca6d7687aa32524cdcf91ec1841e0c40f58c9ae03a5cab71/emval-0.1.12-cp38-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:92dfd39784c9389550d33c1fe971d465240d391cc908365e47fb7a1bb771ca92", size = 6541343 },
+    { url = "https://files.pythonhosted.org/packages/59/b6/9bf851650a0061e1253cbadc72dafda1e1aacc26e64619e5567c7f78ff0d/emval-0.1.12-cp38-abi3-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:4228ce4b3d45b278713e646d704d9a4dfdd5cdaaad16b6ca5b9e47c6fab04e32", size = 6558427 },
+    { url = "https://files.pythonhosted.org/packages/29/99/155d516d77d2cf48213785e67cbf6bce4d1b9d3e383ee57a4b5b715b43dc/emval-0.1.12-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:36e90f1a3e56e30b3ec7739403e26eb15393d301be6756c0ceabefbab673b368", size = 6154528 },
+    { url = "https://files.pythonhosted.org/packages/8d/9e/7fa2f80eef07ced9e5ffae3232b4cd63c987e2a9469a1d9dcc4f6b842da6/emval-0.1.12-cp38-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:02c7192032d3f6017febd1747c03640a3f87b4b9bd401b57e5312c20cb036c02", size = 5935013 },
+    { url = "https://files.pythonhosted.org/packages/5b/ea/5c423acaa757be9978354ce53c359a3461b43368a53254c814f994fc412c/emval-0.1.12-cp38-abi3-musllinux_1_2_armv7l.whl", hash = "sha256:d5fb11ab7829c287044fa8740d8c1dd9e169b338f119043f328f3cee286870c2", size = 6353463 },
+    { url = "https://files.pythonhosted.org/packages/3c/a5/4713d4f58f23b69c07a70712488a850cbc14a88019435a16dda87798d3c0/emval-0.1.12-cp38-abi3-musllinux_1_2_i686.whl", hash = "sha256:c06a6c6e27833642301c4e56c052f63a6ca6987b714250957112d26cabb396af", size = 6502651 },
+    { url = "https://files.pythonhosted.org/packages/9f/bc/cd42112357366297f346b2a875ad95eb7644eed6b077faba50fe2b091ae9/emval-0.1.12-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:d32cbe5654bba0ff99e3562adedb7907ab2f116c2f2d16dfda71ba7f1b8440f5", size = 6333804 },
+    { url = "https://files.pythonhosted.org/packages/00/15/f02636bdb956067ff45216acbc42601b993c99341b3a52104e95935dcfe7/emval-0.1.12-cp38-abi3-win32.whl", hash = "sha256:682b72baa322c769d5217f58a40e0d953d33d739159539b7c44feb0d42d2742c", size = 5449920 },
+    { url = "https://files.pythonhosted.org/packages/4b/12/4ec0b2f59c40ed402ac4af328796994736ec09829a1ff3066e9328ce9e8b/emval-0.1.12-cp38-abi3-win_amd64.whl", hash = "sha256:c759bd9a77dae4b5354b94ed39ff2321c5cf83aa2a16cd1518cd903e991c4a98", size = 5980812 },
 ]
 
 [[package]]

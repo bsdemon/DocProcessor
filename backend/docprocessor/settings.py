@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-from  environs import env
+
+from environs import env
 from pathlib import Path
+from corsheaders.defaults import default_headers
+
 
 env.read_env()
 
@@ -27,7 +30,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", "localhost").split(",")
 
 
 # Application definition
@@ -39,11 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    'rest_framework',
+    "rest_framework",
     "corsheaders",
-
-    'processor',
+    "processor",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-api-key",
+]
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "docprocessor.urls"
@@ -154,3 +158,5 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {
     "socket_connect_timeout": 1,  # IMPORTANT
     "socket_timeout": 1,
 }
+
+API_KEY = env("API_KEY", "")

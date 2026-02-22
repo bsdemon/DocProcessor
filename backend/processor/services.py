@@ -1,9 +1,10 @@
 from django.core.files.uploadedfile import UploadedFile
 from django.utils import timezone
+
 from .models import ImportJob, ImportStatus
 
-class ImportService:
 
+class ImportService:
     @staticmethod
     def create_job(file: UploadedFile) -> ImportJob:
         return ImportJob.objects.create(file=file)
