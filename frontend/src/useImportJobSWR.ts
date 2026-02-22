@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { fetchJob, type ImportJob } from "./api";
 
-export function useImportJob(jobId: string | null) {
+export function useImportJobSWR(jobId: string | null) {
   const key = jobId ? ["import-job", jobId] : null;
 
   const { data, error, isLoading, mutate } = useSWR<ImportJob>(
@@ -19,7 +19,7 @@ export function useImportJob(jobId: string | null) {
   );
 
   return {
-    job: data ?? null,
+    job: data,
     error,
     isLoading,
     refresh: mutate,

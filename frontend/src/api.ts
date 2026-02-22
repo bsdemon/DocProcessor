@@ -29,6 +29,7 @@ export async function uploadCsv(file: File): Promise<{ id: string }> {
 
   const res = await fetch(`${API_BASE_URL}/api/imports/`, {
     method: "POST",
+    headers: { "X-API-KEY": import.meta.env.VITE_IMPORT_API_KEY },
     body: form,
   });
 
@@ -41,7 +42,11 @@ export async function uploadCsv(file: File): Promise<{ id: string }> {
 }
 
 export async function fetchJob(jobId: string): Promise<ImportJob> {
-  const res = await fetch(`${API_BASE_URL}/api/imports/${jobId}/`);
+  const res = await fetch(
+    `${API_BASE_URL}/api/imports/${jobId}/`, {
+      headers: { "X-API-KEY": import.meta.env.VITE_IMPORT_API_KEY },
+    }
+  );
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");

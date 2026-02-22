@@ -8,16 +8,17 @@ export default function App() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  const state = useImportJob(jobId, 1000);
-  const isTotalKnown = state.kind === "ready" && state.job.total_rows > 0;
+
+  const { job, isLoading, error: jobError } = useImportJob(jobId);
+
+  const isTotalKnown = !!job && job.total_rows > 0;
 
   const progress = useMemo(() => {
-    if (state.kind !== "ready") return 0;
-    const { processed_rows, total_rows } = state.job;
+    if (!job) return 0;
+    const { processed_rows, total_rows } = job;
     if (!total_rows) return 0;
     return Math.round((processed_rows / total_rows) * 100);
-  }, [state]);
+  }, [job]);
 
   async function onUpload() {
     if (!selectedFile) return;
@@ -59,12 +60,9 @@ export default function App() {
                 {selectedFile ? "Change File" : "Choose CSV File"}
               </label>
 
-              {selectedFile && (
-                <span className="file-name">
-                  {selectedFile.name}
-                </span>
-              )}
+              {selectedFile && <span className="file-name">{selectedFile.name}</span>}
             </div>
+
             <button onClick={onUpload} disabled={!selectedFile || uploading}>
               {uploading ? "Uploading..." : "Upload"}
             </button>
@@ -72,11 +70,18 @@ export default function App() {
 
           {error && <div className="error-box">{error}</div>}
 
-          {state.kind === "ready" && (
+          {/* job polling status */}
+          {jobId && isLoading && !job && <div className="status-section">Loading job…</div>}
+
+          {jobError && (
+            <div className="error-box">
+              Couldn’t fetch job status: {jobError instanceof Error ? jobError.message : "Unknown error"}
+            </div>
+          )}
+
+          {job && (
             <div className="status-section">
-              <div className={`badge ${state.job.status}`}>
-                {state.job.status}
-              </div>
+              <div className={`badge ${job.status}`}>{job.status}</div>
 
               <div className={`progress-bar ${isTotalKnown ? "" : "indeterminate"}`}>
                 {isTotalKnown ? (
@@ -87,31 +92,25 @@ export default function App() {
               </div>
 
               <div className="progress-text">
-                {state.job.processed_rows}
-                {isTotalKnown ? ` / ${state.job.total_rows} rows (${progress}%)` : " rows processed"}
+                {job.processed_rows}
+                {isTotalKnown ? ` / ${job.total_rows} rows (${progress}%)` : " rows processed"}
               </div>
 
-              {state.job.status === "completed" && (
+              {job.status === "completed" && (
                 <div className="summary">
-                  <div>Total: {state.job.total_rows}</div>
-                  <div>Success: {state.job.success_rows}</div>
-                  <div>Failed: {state.job.failed_rows}</div>
+                  <div>Total: {job.total_rows}</div>
+                  <div>Success: {job.success_rows}</div>
+                  <div>Failed: {job.failed_rows}</div>
                 </div>
               )}
 
-              {state.job.status === "failed" && (
-                <div className="error-box">
-                  {state.job.error || "Job failed"}
-                </div>
-              )}
+              {job.status === "failed" && <div className="error-box">{job.error || "Job failed"}</div>}
             </div>
           )}
         </div>
       </main>
 
-      <footer className="footer">
-        Built with Django + Celery + React
-      </footer>
+      <footer className="footer">Built with Django + Celery + React</footer>
     </div>
   );
 }
