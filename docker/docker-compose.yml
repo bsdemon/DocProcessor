@@ -1,10 +1,5 @@
 services:
   web:
-    # environment:
-    #   - UV_CACHE_DIR=/tmp/uv-cache
-    # tmpfs:
-    #   - /tmp:uid=1000,gid=1000,mode=1777
-    # user: "1000:1000"
     build:
       context: ..
       dockerfile: docker/Dockerfile.backend
@@ -22,11 +17,6 @@ services:
       - redis
 
   celery:
-    # user: "1000:1000"
-    # environment:
-    #   - UV_CACHE_DIR=/tmp/uv-cache
-    # tmpfs:
-    #   - /tmp:uid=1000,gid=1000,mode=1777
     build:
       context: ..
       dockerfile: docker/Dockerfile.backend
