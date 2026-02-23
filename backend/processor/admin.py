@@ -15,15 +15,4 @@ class ImportJobAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    readonly_fields = (
-        "id",
-        "file",
-        "status",
-        "total_rows",
-        "processed_rows",
-        "success_rows",
-        "failed_rows",
-        "error",
-        "created_at",
-        "updated_at",
-    )
+    readonly_fields = [field.name for field in ImportJob._meta.fields]
