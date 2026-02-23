@@ -56,7 +56,7 @@ example values are suitable for local development.
 ``` bash
 unzip docprocessor.zip 
 cd DocProcessor
-chmod  +x setup.sh
+chmod +x setup.sh
 ./setup.sh
 ```
 
@@ -64,7 +64,7 @@ or clone project repo:
 ```bash
 git clone git@github.com:bsdemon/DocProcessor.git
 cd DocProcessor
-chmod  +x setup.sh
+chmod +x setup.sh
 ./setup.sh
 ```
 
