@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .permissions import HasImportApiKey
-from .serializers import ImportUploadSerializer, ImportStatusSerializer
+from .serializers import ImportJobStatusSerializer, ImportUploadSerializer
 from .services import ImportService
 from .tasks import process_import
 from .models import ImportJob
@@ -27,6 +27,7 @@ class ImportUploadApi(APIView):
 class ImportStatusApi(APIView):
     permission_classes = [HasImportApiKey]
 
-    def get(self, request: Request, pk: str) -> Response:
-        job = get_object_or_404(ImportJob, pk=pk)
-        return Response(ImportStatusSerializer(job).data)
+    def get(self, request: Request, uuid: str) -> Response:
+        job = get_object_or_404(ImportJob, pk=uuid)
+        data = ImportJobStatusSerializer.from_instance(job)
+        return Response(data, status=status.HTTP_200_OK)

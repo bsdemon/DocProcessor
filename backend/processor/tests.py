@@ -57,9 +57,6 @@ class ImportStatusApiTest(APITestCase):
 
         response = self.client.get(f"/api/imports/{job.id}/", HTTP_X_API_KEY="test-key")
 
-        created_at = parse_datetime(response.data["created_at"])
-        updated_at = parse_datetime(response.data["updated_at"])
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], ImportStatus.PROCESSING)
         self.assertEqual(response.data["progress"], 50)
@@ -67,8 +64,10 @@ class ImportStatusApiTest(APITestCase):
         self.assertEqual(response.data["processed_rows"], 50)
         self.assertEqual(response.data["success_rows"], 50)
         self.assertEqual(response.data["failed_rows"], 10)
-        self.assertEqual(response.data["file"], "/media/imports/test.csv")
         self.assertEqual(response.data["error"], "")
+
+        created_at = parse_datetime(response.data["created_at"])
+        updated_at = parse_datetime(response.data["updated_at"])
         self.assertIsNotNone(created_at)
         self.assertIsNotNone(updated_at)
 

@@ -62,3 +62,38 @@ class ImportStatusSerializer(serializers.ModelSerializer):
         if obj.total_rows == 0:
             return 0
         return int(obj.processed_rows / obj.total_rows * 100)
+
+
+class ImportJobStatusSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    status = serializers.CharField()
+    total_rows = serializers.IntegerField()
+    processed_rows = serializers.IntegerField()
+    success_rows = serializers.IntegerField()
+    failed_rows = serializers.IntegerField()
+    progress = serializers.IntegerField()
+    error = serializers.CharField(allow_blank=True)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+    @staticmethod
+    def from_instance(job: ImportJob) -> dict:
+        total = job.total_rows or 0
+        processed = job.processed_rows or 0
+
+        progress = 0
+        if total > 0:
+            progress = int((processed / total) * 100)
+
+        return {
+            "id": job.id,
+            "status": job.status,
+            "total_rows": total,
+            "processed_rows": processed,
+            "success_rows": job.success_rows or 0,
+            "failed_rows": job.failed_rows or 0,
+            "progress": progress,
+            "error": job.error or "",
+            "created_at": job.created_at.isoformat(),
+            "updated_at": job.updated_at.isoformat(),
+        }
