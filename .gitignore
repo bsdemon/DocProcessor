@@ -1,0 +1,33 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# VSCode settings
+.vscode
+
+# SQLite database files
+*.sqlite3
+*.db
+
+# media files
+media/
+
+# env file
+.env
+
+# node modules
+frontend/node_modules/
+
+# helper files
+*.log
+*.bak
+*.tmp
+ISSUES.md
+TODO.md
