@@ -40,16 +40,13 @@ example values are suitable for local development.
 - SECRET_KEY – Django secret key used for cryptographic signing.
 - DEBUG – Enables Django debug mode (True/False).
 - ALLOWED_HOSTS – Comma-separated list of allowed hostnames.
-
 - POSTGRES_DB – Name of the PostgreSQL database.
 - POSTGRES_USER – PostgreSQL database user.
 - POSTGRES_PASSWORD – Password for the PostgreSQL user.
 - POSTGRES_HOST – PostgreSQL host (service name in Docker network).
 - POSTGRES_PORT – PostgreSQL port (usually 5432).
-
 - CELERY_BROKER_URL – Redis (or RabbitMQ) URL used by Celery as broker.
 - CELERY_RESULT_BACKEND – Backend used by Celery to store task results.
-
 - API_KEY – Pre-shared API key used for simple request authentication.
 
 ------------------------------------------------------------------------
@@ -59,6 +56,7 @@ example values are suitable for local development.
 ### Development (recommended)
 
 ``` bash
+cd docprocessor_app
 docker compose -f docker/docker-compose.yml up --build
 ```
 
@@ -66,7 +64,6 @@ docker compose -f docker/docker-compose.yml up --build
 
 -   Frontend: http://localhost:5173  
 -   Backend API: http://localhost:8000  
-
 
 ### Run Tests
 
@@ -118,6 +115,13 @@ Progress is written to the database every N rows (`BATCH_SIZE`). This
 reduces write amplification while still providing near real-time UX
 feedback.
 
+### Accurate Row-Based Progress (Streaming Double Pass)
+
+total_rows is computed using a streaming pass over the file, followed by a second streaming pass for processing.
+Trade-off:
+- Accurate row-based progress reporting
+- One additional I/O pass over the file
+
 ### Validation Separation
 
 File type, header validation and row validation are separated for clarity,
@@ -131,13 +135,6 @@ simple and appropriate for the scope of this task.
 ------------------------------------------------------------------------
 
 ## 4) What I Would Improve with More Time
-
-### API Correctness
-
--   Fix status endpoint route to `GET /api/imports/<uuid>/` (currently
-    contains a double-slash route bug).
--   Introduce a stable response DTO instead of exposing the raw model
-    directly.
 
 ### Idempotent Import Handling
 
