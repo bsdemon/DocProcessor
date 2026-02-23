@@ -204,6 +204,43 @@ depending on the business requirements.
 
 ------------------------------------------------------------------------
 
+## Assumptions About the CSV File
+
+For the purpose of this task, the CSV file is assumed to have the following structure and rules.
+
+### Expected Header
+
+The file must contain a header row with exactly the following columns:
+
+id,name,email,amount
+
+### Field Definitions
+
+- **id**
+  - Unique identifier per row within the file
+  - Treated as a string (can support numeric or UUID-like values)
+
+- **name**
+  - Non-empty string
+  - Trimmed before processing
+
+- **email**
+  - Non-empty string
+  - Basic email format validation is applied
+
+- **amount**
+  - Numeric value (parsed as decimal/float)
+  - Must be greater than or equal to 0
+
+### Additional Assumptions
+
+- File encoding is UTF-8.
+- The first row is always the header.
+- Each row must contain the same number of columns as the header.
+- Rows with validation errors are counted as failed but do not stop the entire import.
+- Duplicate IDs within the same file are currently allowed and treated as independent rows (policy can be adjusted based on business requirements).
+
+----------------------------------------------------------------------
 ## Total Time Spent
 
 ~ 40 hours
