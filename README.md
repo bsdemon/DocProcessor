@@ -53,11 +53,26 @@ example values are suitable for local development.
 
 ## 2) How to Run the Project
 
+``` bash
+unzip docprocessor.zip 
+cd DocProcessor
+chmod  +x setup.sh
+./setup.sh
+```
+
+or clone project repo:
+```bash
+git clone git@github.com:bsdemon/DocProcessor.git
+cd DocProcessor
+chmod  +x setup.sh
+./setup.sh
+```
+
 ### Development (recommended)
 
-``` bash
-cd docprocessor_app
-docker compose -f docker/docker-compose.yml up --build
+For developmet you can use:
+```bash
+docker compose -f docker/docker-compose-dev.yml up --build
 ```
 
 ### Services
